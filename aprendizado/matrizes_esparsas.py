@@ -33,7 +33,7 @@ def rbf_kernel_manual(feature_mat, gamma):
     start = time.time()
     for i in tqdm(range(len(feature_mat))):
         for j in tqdm(range(len(feature_mat))):
-            x = np.e ** (-gamma * sqeuclidean(feature_mat[i], feature_mat[j]) )
+            x = sqeuclidean(feature_mat[i], feature_mat[j]) 
     end = time.time()
     print(f"Demorou {end - start}s para fazer a matriz manualmente...")
 

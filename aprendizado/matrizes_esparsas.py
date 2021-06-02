@@ -15,7 +15,7 @@ def load_features_from_file(path):
 
 start = time.time()
 features_matrix = load_features_from_file(
-    '/home/giovanni-server/dev/college/TCC/features/all_features-forro.txt'
+    '/home/giovanni-server/dev/college/TCC/dataset/condensed_features/all_features-forro.txt'
     )
 end = time.time()
 

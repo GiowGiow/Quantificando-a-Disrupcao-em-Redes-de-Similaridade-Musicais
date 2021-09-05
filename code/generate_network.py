@@ -101,6 +101,7 @@ def load_similarity_matrix(file_name, feature_type):
         raise TypeError("This feature type is not supported")
 
 def load_dataframe(dataframe_file):
+    print("Loading dataframe...")
     return pd.read_csv(DATASET_PATH / "input" / "csvs" / dataframe_file)
 
 feat_type = "transfer_learning"
@@ -115,22 +116,32 @@ dataframe = load_dataframe(DF_PATH)
 features = load_features_from_file(FEATS_PATH, feat_type)
 similarity_matrix = load_similarity_matrix(SIMILARITY_MATRIX_PATH, feat_type)
 
+print("Generating Network...")
 graph = generate_network(dataframe, similarity_matrix)
 
+print("Calculating Disruption Index...")
 disruption_index = get_disruption_index_for_nodes(dataframe, graph)
 
+print("Saving Generated Graph...")
+print(f"{feat_type}_{len(disruption_index)}_{gamma}")
 nx.write_gexf(graph, DATASET_PATH / "output" / "graphs" / f"{feat_type}_{len(disruption_index)}_{gamma}.gexf")
 
 import pickle
 
+print("Saving Disruption Index...")
 # Store data (serialize)
 with open(DATASET_PATH / "output" / "disruption_index" / f'{feat_type}_{len(disruption_index)}_{gamma}.pickle', 'wb') as handle:
     pickle.dump(disruption_index, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+print("Merging disruption info with dataframe...")
 disruption_index_df = pd.DataFrame(disruption_index).T
 disruption_index_df.reset_index(inplace=True)
 disruption_index_df.columns = ['id', 'ni', 'nj', 'nk', 'disruption']
 
 song_info_with_disruption = pd.merge(disruption_index_df, dataframe, on='id')
+print(f"New dataframe has {len(song_info_with_disruption)}")
 
+print("Saving Dataframe with disruption information...")
 song_info_with_disruption.to_csv(DATASET_PATH / "output" / "csv_with_disruption" / f"song_info_with_disruption_{len(song_info_with_disruption)}_feat_{feat_type}_gamma_{gamma}.csv", index=False)
+
+print("All done!")

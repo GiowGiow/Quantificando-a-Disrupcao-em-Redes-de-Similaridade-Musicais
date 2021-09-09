@@ -6,6 +6,7 @@ import collections
 from tqdm import tqdm
 from networkx.drawing.nx_pylab import draw_networkx
 
+# Same script as the .ipynb counterpart
 
 def generate_network(list_of_songs, similarity_matrix, similarity_threshold=0.80):
     """ Generate a disruption network based on: 
